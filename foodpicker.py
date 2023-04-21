@@ -8,6 +8,67 @@
 import pandas as pd
 from random import randint
 
+def pick_sidedish(maindish):
+    dishesdb = pd.read_excel("Dishes_Database.xlsx", dtype=str).fillna("")
+    maindishdf = dishesdb[(disesdb["name"] == maindish)] # This shoudl result in a single row dataframe
+    if maindishdf.iloc[0]["only legitimate side dishes"] != "":
+        sidedishes = maindishdf.iloc[0]["only legitimate side dishes"].split(",") 
+        sidedish_name = random.choice(sidedishes)
+    else:
+        plan_done = False
+        while plan_done == False:
+            if maindishdf.iloc[0]["sub type"] == "pongal":
+                sidedishesdf = dishesdb[(dishesdb["sub type"] == "chutney")] 
+            
+            elif maindishdf.iloc[0]["sub type"] == "dhida-phalar": 
+                sidedishesdf = dishesdb[(dishesdb["sub type"] == "chutney")] 
+
+            elif maindishdf.iloc[0]["sub type"] == "chapathi":
+                sidedishesdf = dishesdb[(dishesdb["sub type"] == "subzi")] 
+            
+            elif maindishdf.iloc[0]["sub type"] == "sambar":
+                sidedishesdf = dishesdb[(dishesdb["sub type"] == "ambad") |
+                                        (dishesdb["sub type"] == "roast") |
+                                        (dishesdb["sub type"] == "Vadai")] 
+            
+            elif maindishdf.iloc[0]["sub type"] == "pilchar":
+                sidedishesdf = dishesdb[(dishesdb["sub type"] == "poriyal") |
+                                        (dishesdb["sub type"] == "kutkiri") |
+                                        (dishesdb["sub type"] == "roast") |
+                                        (dishesdb["sub type"] == "Vadai")] 
+            
+            elif maindishdf.iloc[0]["sub type"] == "omty":
+                sidedishesdf = dishesdb[(dishesdb["sub type"] == "poriyal") |
+                                        (dishesdb["sub type"] == "kutkiri") |
+                                        (dishesdb["sub type"] == "roast") |
+                                        (dishesdb["sub type"] == "Vadai")] 
+            
+            else:
+                sidedishesdf = dishesdb[(dishesdb["type"] == "side dish")]
+            
+            sidedishesdf.reset_index(drop=True, inplace=True) 
+            rowval = randint(0,sidedishesdf.shape[0])
+            sidedish_name = sidedishesdf.loc[rowval, "name"]
+
+            # Make sure we haven't selected an illegitimate side dish
+            bad_sidedishes = maindishdf.iloc[0]["illegitimate side dishes"].split(",") 
+            if sidedish_name in bad_sidedishes:
+                continue
+            else:
+                plan_done = True
+
+    sidedish_dict = dishesdb[(dishesdb["name"] == sidedish_name)].iloc[0].to_dict()
+    sidedish = {
+                    "name": sidedish_dict["name"],
+                    "type": "side dish", 
+                    "sub type" : sidedish_dict["sub type"],
+                    "dosha" : sidedish_dict["dosha"],
+                    "anti dosha": sidedish_dict["anti dosha"]
+               }
+
+    return(sidedish) 
+
+
 def plansinglemeal(diet, mealtime)    
     dishesdb = pd.read_excel("Dishes_Database.xlsx", dtype=str).fillna("")
     while plan_done == False:
@@ -31,37 +92,76 @@ def plansinglemeal(diet, mealtime)
                                 & (dishesdb["type"] == "main dish")
                                 & (dishesdb["diet"] == diet]
                 no_of_maindishes = 2 
-            
+           
+            subdf.reset_index(drop=True, inplace=True) 
             items = []        
-            for i = range(no_of_maindishes):    
-                rowval = randint(0,subdf.shape[0])
-                maindish_name = subdf.loc[rowval, "name"]
-                sidedish = pick_sidedish(maindish = maindishname)
-                if sidedish_name == None:
-                    items.append = (    
-                                {
-                                    "name": maindish_name,
-                                    "type": "main dish", 
-                                    "subtype" : subdf.loc[rowval, "subtype"],
-                                    "dosha" : subdf.loc[rowval, "dosha"],
-                                    "anti dosha": subdf.loc[rowval, "anti dosha"]
-                                }
-                            )
-                else:
+            rowval = randint(0,subdf.shape[0])
+            maindish_name = subdf.loc[rowval, "name"]
+            sidedish = pick_sidedish(maindish = maindishname)
+            if sidedish_name == None:
+                items.append = (    
+                            {
+                                "name": maindish_name,
+                                "type": "main dish", 
+                                "sub type" : subdf.loc[rowval, "sub type"],
+                                "dosha" : subdf.loc[rowval, "dosha"],
+                                "anti dosha": subdf.loc[rowval, "anti dosha"]
+                            }
+                        )
+            else:
+                items.append({
+                                "name": maindish_name,
+                                "type": "main dish", 
+                                "sub type" : subdf.loc[rowval, "sub type"],
+                                "dosha" : subdf.loc[rowval, "dosha"],
+                                "anti dosha": subdf.loc[rowval, "anti dosha"]
+                            })
+                items.append({
+                                "name": sidedish["name"],
+                                "type": "side dish", 
+                                "sub type" : sidedish["sub type"],
+                                "dosha" : sidedish["dosha"],
+                                "anti dosha": sidedish["anti dosha"]
+                            })
+
+            if mealtime == "lunch":
+                if items[0]["name"] != "Complete meal": # If we have chosen a complete meal already, then we are done
+                    if items[0]["sub type"] != "pilchar":
+                        subsubdf = subdf[(subdf["sub type" == "pilchar"]) & (subdf["sub type"] != "Complete meal")]
+                    else:
+                        subsubdf = subdf[(subdf["sub type" != "pilchar"]) & (subdf["sub type"] != "Complete meal")]
+
+                    subdf.reset_index(drop=True, inplace=True) 
+                    rowval = randint(0,subsubdf.shape[0])
+                    maindish_name = subdfsubdf.loc[rowval, "name"]
+                    
+                    plan_done = False
+                    while plan_done == False:
+                        sidedish = pick_sidedish(maindish = maindishname)
+                        if len(items) > 1:  # Just an additional check to avoid weird bugs. Probably not needed
+                            if sidedish == items[1]["name"]:
+                                break
+                            else:
+                                plan_done == True
+                        else:
+                            plan_done == True
+
                     items.append({
                                     "name": maindish_name,
                                     "type": "main dish", 
-                                    "subtype" : subdf.loc[rowval, "subtype"],
-                                    "dosha" : subdf.loc[rowval, "dosha"],
-                                    "anti dosha": subdf.loc[rowval, "anti dosha"]
+                                    "sub type" : subsubdf.loc[rowval, "sub type"],
+                                    "dosha" : subsubdf.loc[rowval, "dosha"],
+                                    "anti dosha": subsubdf.loc[rowval, "anti dosha"]
                                 })
                     items.append({
                                     "name": sidedish["name"],
                                     "type": "side dish", 
-                                    "subtype" : sidedish["subtype"],
+                                    "sub type" : sidedish["sub type"],
                                     "dosha" : sidedish["dosha"],
                                     "anti dosha": sidedish["anti dosha"]
                                 })
+                    
+                    
                 
             meal = { 
                     "time":mealtime,
@@ -97,14 +197,14 @@ def plansinglemeal(diet, mealtime)
 #                   {
 #                       "name": "Mudha pongal",
 #                       "type": "main dish", 
-#                       "subtype" : "pongal",
+#                       "sub type" : "pongal",
 #                       "dosha" : "",
 #                       "anti dosha": ""
 #                   },
 #                   {
 #                       "name": "Vangi chutney",
 #                       "type": "side dish",
-#                       "subtype" : "chutney",
+#                       "sub type" : "chutney",
 #                       "dosha" : "",
 #                       "anti dosha": ""
 #                   }
@@ -116,28 +216,28 @@ def plansinglemeal(diet, mealtime)
 #                   {
 #                       "name": "Yellow poosani sambar",
 #                       "type": "main dish",
-#                       "subtype" : "sambar",
+#                       "sub type" : "sambar",
 #                       "dosha" : "vata",
 #                       "anti dosha": ""
 #                   },
 #                   {
 #                       "name": "Butter beans ambad",
 #                       "type": "side dish",
-#                       "subtype" : "ambad",
+#                       "sub type" : "ambad",
 #                       "dosha" : "vata",
 #                       "anti dosha": "unknown"
 #                   },
 #                   {
 #                       "name": "Thikka pilchar",
 #                       "type": "main dish",
-#                       "subtype" : "pilchar",
+#                       "sub type" : "pilchar",
 #                       "dosha" : "",
 #                       "anti dosha": ""
 #                   },
 #                   {
 #                       "name": "Carrot muttakos poriyal",
 #                       "type": "side dish",
-#                       "subtype" : "poriyal",
+#                       "sub type" : "poriyal",
 #                       "dosha" : "",
 #                       "anti dosha": ""
 #                   },
@@ -197,10 +297,10 @@ def planmeals(diet="vegetarian", planfor="day", mealtime=None, request_type="new
         plan_done = False   # This variable is used to tell us when to stop iterating on 
         while plan_done = False: 
             meal3 = plansinglemean(diet = diet, mealtime = "dinner")
-            if meal1["items"][0]["subtype"] == meal3["items"][0]["subtype"]:    # Assuming items[0] will always be the main dish
-                                                                            # We don't want two dishes of the same subtype,
-                                                                            # ex. pongal, to be selected for both breakfast 
-                                                                            # and dinner
+            if meal1["items"][0]["sub type"] == meal3["items"][0]["sub type"]:  # Assuming items[0] will always be the main dish
+                                                                                # We don't want two dishes of the same sub type,
+                                                                                # ex. pongal, to be selected for both breakfast 
+                                                                                # and dinner
                 continue
             if len(meal1[items]) == 2 and len(meal3[items]) == 2 :
                 if meal1["items"][1]["name"] == meal3["items"][1]["name"]:  # Assuming items[1] will always be the side dish
@@ -208,6 +308,8 @@ def planmeals(diet="vegetarian", planfor="day", mealtime=None, request_type="new
                     continue
             
             plan_done = True
+    else:   # Assume the plan request is for a week
+        
  
 
                 
