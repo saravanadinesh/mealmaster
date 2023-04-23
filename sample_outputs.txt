@@ -1,0 +1,77 @@
+
+{
+    "day": {
+        "meal1": {
+            "time": "breakfast",
+            "items": [
+                {
+                    "name": "Ambad bhat",
+                    "type": "main dish",
+                    "sub type": "pongal",
+                    "dosha": "pita",
+                    "anti dosha": "unspecified"
+                },
+                {
+                    "name": "Kachanna sundal",
+                    "type": "side dish",
+                    "sub type": "unspecified",
+                    "dosha": "vata",
+                    "anti dosha": "unspecified"
+                }
+            ]
+        },
+        "meal2": {
+            "time": "lunch",
+            "items": [
+                {
+                    "name": "Losan pilchar",
+                    "type": "main dish",
+                    "sub type": "pilchar",
+                    "dosha": "unspecified",
+                    "anti dosha": "anti vata"
+                },
+                {
+                    "name": "Aamai vada",
+                    "type": "side dish",
+                    "sub type": "Vadai",
+                    "dosha": "unspecified",
+                    "anti dosha": "unspecified"
+                },
+                {
+                    "name": "Agasthir omty",
+                    "type": "main dish",
+                    "sub type": "omty",
+                    "dosha": "unspecified",
+                    "anti dosha": "unspecified"
+                },
+                {
+                    "name": "Kennu poriyal",
+                    "type": "side dish",
+                    "sub type": "poriyal",
+                    "dosha": "unspecified",
+                    "anti dosha": "unspecified"
+                }
+            ]
+        },
+        "meal3": {
+            "time": "dinner",
+            "items": [
+                {
+                    "name": "Pasipparuppu adai",
+                    "type": "main dish",
+                    "sub type": "dhida-phalar",
+                    "dosha": "vata",
+                    "anti dosha": "unspecified"
+                },
+                {
+                    "name": "Aviyal for adai",
+                    "type": "side dish",
+                    "sub type": "chutney",
+                    "dosha": "unspecified",
+                    "anti dosha": "anti pita"
+                }
+            ]
+        }
+    }
+}
+
