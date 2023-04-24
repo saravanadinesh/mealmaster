@@ -57,13 +57,16 @@ def pick_sidedish(maindish):
             sidedish_name = sidedishesdf.loc[rowval, "name"]
 
             # Make sure we haven't selected an illegitimate side dish
-            bad_sidedishes = maindishdf.iloc[0]["illegitimate side dishes"].split(",") 
+            bad_sidedishes = maindishdf.iloc[0]["illegitimate side dishes"].split(", ")
             if sidedish_name in bad_sidedishes:
                 continue
             else:
                 plan_done = True
 
-    sidedish_dict = dishesdb[(dishesdb["name"] == sidedish_name)].iloc[0].to_dict()
+    try:
+        sidedish_dict = dishesdb[(dishesdb["name"] == sidedish_name)].iloc[0].to_dict()
+    except:
+        print("Exception")
     sidedish = {
                     "name": sidedish_dict["name"],
                     "type": "side dish", 
@@ -442,7 +445,7 @@ def planmeals(diet="vegetarian", planfor="day", mealtime=None, request_type="new
                 if maindish["name"] in prev_bf_maindishes:
                     continue 
                 
-                prev_bf_maindishes.extend(maindish["name"])
+                prev_bf_maindishes.append(maindish["name"])
                 maindish_chosen = True
 
             sidedish_chosen = False
@@ -451,9 +454,10 @@ def planmeals(diet="vegetarian", planfor="day", mealtime=None, request_type="new
                 if sidedish == None:
                     break
                 if sidedish["name"] in prev_bf_sidedishes:
-                    continue 
-                
-                prev_bf_sidedishes.extend(sidedish["name"])
+                    continue
+
+                if sidedish != None:
+                    prev_bf_sidedishes.append(sidedish["name"])
                 sidedish_chosen = True
             if sidedish == None:
                 bf_dishes.append([maindish,{}])
@@ -481,7 +485,7 @@ def planmeals(diet="vegetarian", planfor="day", mealtime=None, request_type="new
                 if maindish["name"] in prev_dinner_maindishes:
                     continue 
                 
-                prev_dinner_maindishes.extend(maindish["name"])
+                prev_dinner_maindishes.append(maindish["name"])
                 maindish_chosen = True
 
             sidedish_chosen = False
@@ -489,10 +493,14 @@ def planmeals(diet="vegetarian", planfor="day", mealtime=None, request_type="new
                 sidedish = pick_sidedish(maindish["name"])
                 if sidedish == None:
                     break
-                if (sidedish["name"] in prev_dinner_sidedishes) or (sidedish["name"] == bf_dishes[i][1]["name"]):
-                    continue 
-                
-                prev_dinner_sidedishes.extend(sidedish["name"])
+                if (sidedish["name"] in prev_dinner_sidedishes):
+                    continue
+                if bf_dishes[i][1] != {}:
+                    if (sidedish["name"] == bf_dishes[i][1]["name"]):
+                        continue
+
+                if sidedish != None:
+                    prev_dinner_sidedishes.append(sidedish["name"])
                 sidedish_chosen = True
 
             if sidedish == None:
@@ -521,7 +529,7 @@ def planmeals(diet="vegetarian", planfor="day", mealtime=None, request_type="new
                 if (maindish["name"] in prev_lunch_maindishes) or (maindish["name"] in prev_dinner_maindishes):
                     continue 
                 
-                prev_lunch_maindishes.extend(maindish["name"])
+                prev_lunch_maindishes.append(maindish["name"])
                 maindish_chosen = True
 
             sidedish_chosen = False
@@ -530,9 +538,10 @@ def planmeals(diet="vegetarian", planfor="day", mealtime=None, request_type="new
                 if sidedish == None:
                     break
                 if (sidedish["name"] in prev_lunch_sidedishes):
-                    continue 
-                
-                prev_lunch_sidedishes.extend(sidedish["name"])
+                    continue
+
+                if sidedish != None:
+                    prev_lunch_sidedishes.append(sidedish["name"])
                 sidedish_chosen = True
 
             if sidedish == None:
@@ -561,9 +570,10 @@ def planmeals(diet="vegetarian", planfor="day", mealtime=None, request_type="new
                     if sidedish == None:
                         break
                     if (sidedish["name"] in prev_lunch_sidedishes):
-                        continue 
-                    
-                    prev_lunch_sidedishes.extend(sidedish["name"])
+                        continue
+
+                    if sidedish == None:
+                        prev_lunch_sidedishes.append(sidedish["name"])
                     sidedish_chosen = True
                 if sidedish == None:
                     lunch_dishes.append([maindish,{}])
@@ -577,14 +587,14 @@ def planmeals(diet="vegetarian", planfor="day", mealtime=None, request_type="new
         for day in range(5):
             meal1_items = bf_dishes[day]
             meal2_items = lunch_dishes[day*2]
-            meal2_items.append(lunch_dishes[day*2 + 1])
+            meal2_items.extend(lunch_dishes[day*2 + 1])
             meal3_items = dinner_dishes[day]
 
-            days[day] = {
+            days.append({
                             "meal1": {"time":"breakfast", "items": meal1_items},
-                            "meal1": {"time":"lunch", "items": meal2_items},
-                            "meal1": {"time":"dinner", "items": meal3_items}
-                        }
+                            "meal2": {"time":"lunch", "items": meal2_items},
+                            "meal3": {"time":"dinner", "items": meal3_items}
+                        })
         
         mealplan = {
                     "day1": days[0],
