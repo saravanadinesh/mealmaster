@@ -8,7 +8,9 @@
 import pandas as pd
 import random
 from flask import Flask, request
+from flask_cors import CORS
 app = Flask(__name__)
+cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 def pick_sidedish(maindish, dishesdb):
     maindishdf = dishesdb[(dishesdb["name"] == maindish)] # This should result in a single row dataframe
@@ -254,6 +256,7 @@ def plansinglemeal(dishesdb, mealtime = "lunch"):
 #        
 # ---------------------------------------------------------------------------------------------------------------
 @app.route('/api/v1.0')
+# @cross_origin()
 def planmeals_api():
     args = request.args
     return planmeals(args.get("diet"), args.get("planfor"), args.get("mealtime"), args.get("request_type"), args.get("change_item"), args.get("meal_plan"))
