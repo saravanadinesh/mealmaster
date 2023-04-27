@@ -63,7 +63,6 @@ def pick_sidedish(maindish, dishesdb):
     sidedish = (sidedish_series.drop(labels=["diet", "time", "only legitimate side dishes", "illegitimate side dishes"])).to_dict()
     return(sidedish) 
 
-
 def plansinglemeal(dishesdb, mealtime = "lunch"):
     if mealtime == "breakfast":
         subdf = dishesdb.query('time == ["breakfast", "breakfast or dinner"] and type == "main dish"')
