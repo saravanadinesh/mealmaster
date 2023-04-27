@@ -26,7 +26,7 @@
           console.log(byDay);
           console.log(jsonData[byDay]);
           var day = jsonData[byDay];
-          
+
           $("#recipes").append('<h2 class="first-letter">' + byDay + '</h2>');
           for (const x in day) {
             console.log(day)
@@ -40,9 +40,12 @@
             console.log(mealItems);
             var mealNames = '';
             for (let i = 0; i < mealItems.length; i++) {
-              var divHtml =
-                '<div class="card-panel recipe white row"><div class="recipe-details"><div class="recipe-title">' + mealItems[i]["name"] + '</div></div><div class="recipe-delete"><i class="material-icons" id="refresh" link="http://localhost:5500/api/v1.0?time=meal["time"]">refresh</i></div></div>'
-              $("#recipes").append(divHtml);
+              if (typeof mealItems[i]["name"] !== 'undefined') {
+                var divHtml =
+                  '<div class="card-panel recipe white row"><div class="recipe-details"><div class="recipe-title">' + mealItems[i]["name"] + '</div></div><div class="recipe-delete"><i class="material-icons" id="refresh" link="http://localhost:5500/api/v1.0?time=meal["time"]">refresh</i></div></div>'
+                $("#recipes").append(divHtml);
+              }
+
             }
           }
         }
@@ -163,7 +166,7 @@
       <h6>Feedback please!</h6>
       <div class="divider"></div>
       <div class="input-field">
-        <input  id="title" type="text" class="validate">
+        <input id="title" type="text" class="validate">
         <label for="title">Name</label>
       </div>
       <div class="input-field">
