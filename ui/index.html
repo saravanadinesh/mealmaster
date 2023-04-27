@@ -1,4 +1,8 @@
 <html lang="en">
+<<<<<<< HEAD
+
+=======
+>>>>>>> 098cc5b0ce46182914e929f52a7f6cd38116889b
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,40 +15,47 @@
   <script type="text/javascript" src="js/materialize.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 </head>
+
 <body class="grey lighten-4">
-<script type="text/javascript">
-  $(function(){
-  $.get("http://localhost:5000/api/v1.0?diet=vegetarian&planfor=day", function(data, status){
-  
-    var jsonData = JSON.parse(JSON.stringify(data));
+  <script type="text/javascript">
+    $(function () {
+      $.get("http://localhost:5000/api/v1.0?diet=vegetarian&planfor=week", function (data, status) {
 
-    console.log(jsonData);
-      console.log(jsonData["day"]);
-      var day = jsonData["day"];
-      
-        console.log("Meal1")
-        for(const x in day) {
-          console.log(day)
-          var meal = day[x];
-          console.log(meal)
-          mealHeader = '<h3>' + meal["time"] + '</h3>'
-          $("#recipes").append(mealHeader);
-          
-          var mealItems = meal["items"];
-          console.log("mealItems");
-          console.log(mealItems);
-          var mealNames = '';
-          for(let i=0;i<mealItems.length;i++) {
-            var divHtml = 
-        '<div class="card-panel recipe white row"><div class="recipe-details"><div class="recipe-title">' + mealItems[i]["name"] + '</div></div><div class="recipe-delete"><i class="material-icons" id="refresh">refresh</i></div></div>'
-        $("#recipes").append(divHtml);
+        var jsonData = JSON.parse(JSON.stringify(data));
+
+        console.log(jsonData);
+        for (const byDay in jsonData) {
+          console.log("by day");
+          console.log(byDay);
+          console.log(jsonData[byDay]);
+          var day = jsonData[byDay];
+
+          $("#recipes").append('<h2 class="first-letter">' + byDay + '</h2>');
+          for (const x in day) {
+            console.log(day)
+            var meal = day[x];
+            console.log(meal)
+            mealHeader = '<h3 class="first-letter">' + meal["time"] + '</h3>'
+            $("#recipes").append(mealHeader);
+
+            var mealItems = meal["items"];
+            console.log("mealItems");
+            console.log(mealItems);
+            var mealNames = '';
+            for (let i = 0; i < mealItems.length; i++) {
+              if (typeof mealItems[i]["name"] !== 'undefined') {
+                var divHtml =
+                  '<div class="card-panel recipe white row"><div class="recipe-details"><div class="recipe-title">' + mealItems[i]["name"] + '</div></div><div class="recipe-delete"><i class="material-icons" id="refresh" link="http://localhost:5500/api/v1.0?time=meal["time"]">refresh</i></div></div>'
+                $("#recipes").append(divHtml);
+              }
+
+            }
           }
-        
-    }
-  });
+        }
+      });
 
-});
-</script>
+    });
+  </script>
   <!-- top nav -->
   <nav class="z-depth-0">
     <div class="nav-wrapper container">
@@ -55,6 +66,8 @@
     </div>
   </nav>
 
+  <br>
+  <br>
   <div class="center grey-text text-darken-1">
     <a class="waves-effect waves-light btn-small">Vegetarian</a>
     <a class="waves-effect waves-light btn-small disabled">Non Vegetarian</a>
@@ -65,76 +78,27 @@
     <li><a class="subheader">Theeni Pandaram</a></li>
     <li><a href="index.html" class="waves-effect">Home</a></li>
     <li><a href="pages/about.html" class="waves-effect">About</a></li>
-    <li><div class="divider"></div></li>
+    <li>
+      <div class="divider"></div>
+    </li>
     <li><a href="pages/contact.html" class="waves-effect">
-      <i class="material-icons">mail_outline</i>Contact</a>
+        <i class="material-icons">mail_outline</i>Contact</a>
     </li>
   </ul>
 
   <br><br>
 
   <div class="center">
-    Help me plan for
-  <form action="#">
-    <p>
-      <label>
-        <input name="group1" type="radio" />
-        <span>A single meal</span>
-      </label>
-    </p>
-    <p>
-      <label>
-        <input name="group1" type="radio" checked />
-        <span>A day (3 meals)</span>
-      </label>
-    </p>
-    <p>
-      <label>
-        <input class="with-gap" name="group1" type="radio"  />
-        <span>A week (5 days of food)</span>
-      </label>
-    </p>
-  </form>
-</div>
+    <h3>Help me plan for</h3>
+    <div class="center grey-text text-darken-1">
+      <a class="waves-effect waves-light btn-small disabled">A single meal</a>
+      <a class="waves-effect waves-light btn-small disabled">A day (3 meals)</a>
+      <a class="waves-effect waves-light btn-small">A week (5 days of food)</a>
+    </div>
+  </div>
 
   <!-- recipes -->
   <div class="recipes container grey-text text-darken-1" id="recipes">
-    <!-- <div class="card-panel recipe white row">
-      <div class="recipe-details">
-        <div class="recipe-title">Mudha Pongal, Vangi Budith</div>
-      </div>
-      <div class="recipe-delete">
-        <i class="material-icons" id="refresh">refresh</i>
-      </div>
-    </div>
-    <div class="card-panel recipe white row">
-      <div class="recipe-details">
-        <div class="recipe-title">Sambar, Pilchar, Kidney beans ambad, Carrot and Cabbage poriyal</div>
-      </div>
-      <div class="recipe-delete">
-        <i class="material-icons">refresh</i>
-      </div>
-    </div>
-    <div class="card-panel recipe white row">
-      
-      <div class="recipe-details">
-        <div class="recipe-title">Orange fruit</div>
-        
-      </div>
-      <div class="recipe-delete">
-        <i class="material-icons">refresh</i>
-      </div>
-    </div>
-    <div class="card-panel recipe white row">
-      
-      <div class="recipe-details">
-        <div class="recipe-title">Dhida, Alla chutney</div>
-      
-      </div>
-      <div class="recipe-delete">
-        <i class="material-icons">refresh</i>
-      </div>
-    </div> -->
   </div>
 
   <div class="center">
@@ -146,24 +110,31 @@
   <!-- add recipe side nav -->
   <div id="side-form" class="sidenav side-form">
     <form class="add-recipe container section">
-      <h6 >Feedback please!</h6>
+      <h5>Feedback please!</h5>
       <div class="divider"></div>
       <div class="input-field">
-        <input placeholder="e.g. Limbu Bhath" id="title" type="text" class="validate">
-        <label for="title">Recipe Title</label>
+        <input id="title" type="text" class="validate">
+        <label for="title">Name</label>
       </div>
       <div class="input-field">
-        <input placeholder="e.g. Lemon, Raw rice, oil" id="ingredients" type="text" class="validate">
-        <label for="ingredients">Ingredients</label>
+        <input id="Whatsappnumber" type="text" class="validate">
+        <label>Whatsapp number</label>
+      </div>
+      <div class="input-field">
+        <input id="email" type="text" class="validate">
+        <label>Email</label>
+      </div>
+      <div class="input-field">
+        <textarea id="textarea1" class="materialize-textarea"></textarea>
+        <label>Feedback</label>
       </div>
       <div class="input-field center">
-        <button class="btn-small">Add</button>
+        <button class="btn-small">Submit</button>
       </div>
     </form>
   </div>
 
-  <!-- TODO: feedback form - Name, Whatsapp number, Email, Feedback -->
-
   <script src="js/ui.js"></script>
 </body>
+
 </html>

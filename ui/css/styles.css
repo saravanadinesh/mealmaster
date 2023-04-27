@@ -33,6 +33,7 @@ nav .sidenav-trigger{
   grid-template-columns: 2fr 6fr 1fr;
   grid-template-areas: "image details delete";
   position: relative;
+  margin-left: 3%;
 }
 .recipe img{
   grid-area: image;
@@ -72,4 +73,13 @@ input{
 }
 form .input-field{
   margin-top: 30px;
+}
+
+h2::first-letter {
+  text-transform:capitalize;
+}
+
+h3::first-letter {
+  text-transform:capitalize;
+  margin-left: 3%;
 }
