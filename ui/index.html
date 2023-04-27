@@ -60,6 +60,8 @@
     </div>
   </nav>
 
+  <br>
+  <br>
   <div class="center grey-text text-darken-1">
     <a class="waves-effect waves-light btn-small">Vegetarian</a>
     <a class="waves-effect waves-light btn-small disabled">Non Vegetarian</a>
@@ -81,8 +83,13 @@
   <br><br>
 
   <div class="center">
-    Help me plan for
-    <form action="#">
+    <h3>Help me plan for</h3>
+    <div class="center grey-text text-darken-1">
+      <a class="waves-effect waves-light btn-small disabled">A single meal</a>
+      <a class="waves-effect waves-light btn-small disabled">A day (3 meals)</a>
+      <a class="waves-effect waves-light btn-small">A week (5 days of food)</a>
+    </div>
+    <!-- <form action="#">
       <p>
         <label>
           <input name="group1" type="radio" />
@@ -101,7 +108,7 @@
           <span>A week (5 days of food)</span>
         </label>
       </p>
-    </form>
+    </form> -->
   </div>
 
   <!-- recipes -->
@@ -156,15 +163,23 @@
       <h6>Feedback please!</h6>
       <div class="divider"></div>
       <div class="input-field">
-        <input placeholder="e.g. Limbu Bhath" id="title" type="text" class="validate">
-        <label for="title">Recipe Title</label>
+        <input  id="title" type="text" class="validate">
+        <label for="title">Name</label>
       </div>
       <div class="input-field">
-        <input placeholder="e.g. Lemon, Raw rice, oil" id="ingredients" type="text" class="validate">
-        <label for="ingredients">Ingredients</label>
+        <input id="Whatsappnumber" type="text" class="validate">
+        <label>Whatsapp number</label>
+      </div>
+      <div class="input-field">
+        <input id="email" type="text" class="validate">
+        <label>Email</label>
+      </div>
+      <div class="input-field">
+        <textarea id="textarea1" class="materialize-textarea"></textarea>
+        <label>Feedback</label>
       </div>
       <div class="input-field center">
-        <button class="btn-small">Add</button>
+        <button class="btn-small">Submit</button>
       </div>
     </form>
   </div>
