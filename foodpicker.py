@@ -256,11 +256,55 @@ def plansinglemeal(dishesdb, mealtime = "lunch"):
 @app.route('/api/v1.0')
 def planmeals_api():
     args = request.args
-    return planmeals(args.get("diet"), args.get("planfor"), args.get("mealtime"), args.get("request_type"), args.get("change_item"), args.get("meal_plan"))
-
+    if args.get("request_type") == "change":
+        return changemeal(args.get("change_item"), args.get("meal_plan"))
+    else:
+        return planmeals(args.get("diet"), args.get("planfor"), args.get("mealtime"), args.get("request_type"), args.get("change_item"), args.get("meal_plan"))
+    
+def changemeal(change_item, meal_plan):
+    return(meal_plan)
+#    dishesdb = pd.read_excel("Dishes_Database.xlsx", dtype=str).fillna("")
+#
+#    if diet == "vegetarian":
+#        dishesdb.drop(dishesdb[dishesdb['diet'] == "nonvegetarian"].index, inplace = True)
+#
+#    if item["type"] == "main dish":
+#        if mealtime in ["breakfast", "dinner"]:
+#            if item["sub type"] in ["pongal", "dhida-phalar", "chapathi"]:
+#                legit_subtypes =  ["pongal", "dhida-phalar", "chapathi"]
+#            else:
+#                legit_subtypes =  ["pongal", "dhida-phalar", "chapathi", "Complete meal", "unspecified"]
+#        else: # TODO: We arent considering snacks for now
+#            if item["sub type"] in ["sambar", "omty"]:
+#                legit_subtypes =  ["sambar", "omty"]
+#            elif item["sub type"] == "pilchar":
+#                legit_subtypes =  ["pilchar"]
+#            else:
+#                legit_subtypes = ["sambar", "omty", "Complete meal"]
+#
+#
+#    else: 
+#        if item["sub type"] == "chutney":
+#            legit_subtypes = ["chutney"]
+#        elif item["sub type"] == "subzi":
+#            legit_subtypes = ["subzi"]
+#        else:
+#            legit_subtypes = ["ambad", "roast", "Vadai", "poriyal", "kutkiri", "roast", "Vadai"]
+#    
+#    items = []
+#    subdf = dineshdb[(dineshdb["time"] == mealtime) & (dineshdb["sub type"] in legit_subtypes) &(dineshdb["name"] != item["name"])]
+#    new_dish_series = subdf.iloc[random.randomint(0, subdf.shape[0]-1)]
+#    new_dish = (new_dish_series.drop(labels=["diet", "time", "only legitimate side dishes", "illegitimate side dishes"])).to_dict()
+#    
+#    items.append(new_dish)
+#    if (item["sub type"] == "Complete meal") and (new_dish["type"] in ["omty", "sambar", "pilchar"]):
+#        sidedish = pick_sidedish(item["name"])
+#        items.append(sidedish)
+#
 
 def planmeals(diet="vegetarian", planfor="day", mealtime="lunch", request_type="new", change_item=None, meal_plan=None):
     print("Starting to plan meals")
+    print(diet, planfor, mealtime)
     dishesdb = pd.read_excel("Dishes_Database.xlsx", dtype=str).fillna("")
 
     if diet == "vegetarian":
@@ -618,7 +662,7 @@ def planmeals(diet="vegetarian", planfor="day", mealtime="lunch", request_type="
                     "day5": days[4],
                     }
 
-
+    print("Planning done")
     return(mealplan)
 
 
