@@ -12,5 +12,6 @@ recipeContainer.addEventListener('click', evt => {
   if(evt.target.tagName === 'I') {
     const id = evt.target.getAttribute('data-id');
     alert(id);
+    loadRecipes()
   }
 });

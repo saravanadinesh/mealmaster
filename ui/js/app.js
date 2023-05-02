@@ -26,7 +26,8 @@ function loadRecipes(planMeal) {
     $("#recipes").empty();
     
 
-    var jsonData = JSON.parse(JSON.stringify(data));
+    requestJson = JSON.stringify(data);
+    var jsonData = JSON.parse(requestJson);
 
     console.log(jsonData);
     for (const byDay in jsonData) {
@@ -56,7 +57,7 @@ function loadRecipes(planMeal) {
         for (let i = 0; i < mealItems.length; i++) {
           if (typeof mealItems[i]["name"] !== 'undefined') {
             var divHtml =
-              '<div class="card-panel recipe white row"><div class="recipe-details"><div class="recipe-title">' + mealItems[i]["name"] + '</div></div><div class="recipe-delete"><i class="material-icons" id="refresh" link="http://localhost:5500/api/v1.0?time=meal["time"]" data-id="'+ mealItems[i]["name"] +'">refresh</i></div></div>'
+              '<div class="card-panel recipe white row"><div class="recipe-details"><div class="recipe-title">' + mealItems[i]["name"] + '</div></div><div class="recipe-delete"><i class="material-icons" id="refresh" link="http://localhost:5500/api/v1.0?time=meal["time"]" data-id="'+ mealItems[i]["name"] +'" data-json="' + requestJson + '>refresh</i></div></div>'
             $("#recipes").append(divHtml);
           }
 
