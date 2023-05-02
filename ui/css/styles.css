@@ -83,3 +83,12 @@ h3::first-letter {
   text-transform:capitalize;
   margin-left: 3%;
 }
+
+.gray-txt-btn {
+  /* color: gray; */
+  background-color: grey;
+}
+
+green-txt-btn {
+  background-color: #26a69a;
+}

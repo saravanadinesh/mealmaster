@@ -6,3 +6,11 @@ document.addEventListener('DOMContentLoaded', function() {
   const forms = document.querySelectorAll('.side-form');
   M.Sidenav.init(forms, {edge: 'left'});
 });
+
+const recipeContainer = document.querySelector('.recipes');
+recipeContainer.addEventListener('click', evt => {
+  if(evt.target.tagName === 'I') {
+    const id = evt.target.getAttribute('data-id');
+    alert(id);
+  }
+});

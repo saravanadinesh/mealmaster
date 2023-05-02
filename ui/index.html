@@ -1,8 +1,4 @@
 <html lang="en">
-<<<<<<< HEAD
-
-=======
->>>>>>> 098cc5b0ce46182914e929f52a7f6cd38116889b
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,6 +10,7 @@
   <link type="text/css" href="css/styles.css" rel="stylesheet">
   <script type="text/javascript" src="js/materialize.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+  <script type="text/javascript" src="js/app.js"></script>
 </head>
 
 <body class="grey lighten-4">
@@ -45,7 +42,7 @@
             for (let i = 0; i < mealItems.length; i++) {
               if (typeof mealItems[i]["name"] !== 'undefined') {
                 var divHtml =
-                  '<div class="card-panel recipe white row"><div class="recipe-details"><div class="recipe-title">' + mealItems[i]["name"] + '</div></div><div class="recipe-delete"><i class="material-icons" id="refresh" link="http://localhost:5500/api/v1.0?time=meal["time"]">refresh</i></div></div>'
+                  '<div class="card-panel recipe white row"><div class="recipe-details"><div class="recipe-title">' + mealItems[i]["name"] + '</div></div><div class="recipe-delete"><i class="material-icons" id="refresh" link="http://localhost:5500/api/v1.0?time=meal["time"]" data-id="'+ mealItems[i]["name"] +'">refresh</i></div></div>'
                 $("#recipes").append(divHtml);
               }
 
@@ -55,6 +52,11 @@
       });
 
     });
+
+    // const recipeContainer = document.querySelector('.recipes');
+// $('#single').on('click',()=>{
+//     alert('single');
+//   });
   </script>
   <!-- top nav -->
   <nav class="z-depth-0">
@@ -90,10 +92,10 @@
 
   <div class="center">
     <h3>Help me plan for</h3>
-    <div class="center grey-text text-darken-1">
-      <a class="waves-effect waves-light btn-small disabled">A single meal</a>
-      <a class="waves-effect waves-light btn-small disabled">A day (3 meals)</a>
-      <a class="waves-effect waves-light btn-small">A week (5 days of food)</a>
+    <div id="plan" class="center grey-text text-darken-1">
+      <a class="waves-effect waves-light btn-small gray-txt-btn" id="single">A single meal</a>
+      <a class="waves-effect waves-light btn-small gray-txt-btn" id="day">A day (3 meals)</a>
+      <a class="waves-effect waves-light btn-small" id="week">A week (5 days of food)</a>
     </div>
   </div>
 
