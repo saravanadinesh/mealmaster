@@ -9,6 +9,7 @@ import pandas as pd
 import random
 from flask import Flask, request
 from flask_cors import CORS
+import json
 app = Flask(__name__)
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
@@ -260,8 +261,17 @@ def planmeals_api():
     args = request.args
     return planmeals(args.get("diet"), args.get("planfor"), args.get("mealtime"), args.get("request_type"), args.get("change_item"), args.get("meal_plan"))
 
+@app.route('/api/v1.0', methods=['POST'])
+def planmeals_api_json():
+    content_type = request.headers.get('Content-Type')
+    if (content_type == 'application/json'):
+        data = json.loads(request.data)
+        return planmeals(diet=data["diet"], planfor=data["planfor"], day=data["day"],mealtime=data["mealtime"], request_type="change", change_item=data["change_item"], meal_plan=data["meal_plan"])
+    else:
+        return 'Content-Type not supported!'
 
-def planmeals(diet="vegetarian", planfor="day", mealtime="lunch", request_type="new", change_item=None, meal_plan=None):
+
+def planmeals(diet="vegetarian", planfor="day", day="day", mealtime="lunch", request_type="new", change_item=None, meal_plan=None):
     print("Starting to plan meals")
     dishesdb = pd.read_excel("Dishes_Database.xlsx", dtype=str).fillna("")
 
