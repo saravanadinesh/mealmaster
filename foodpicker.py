@@ -9,6 +9,7 @@ import pandas as pd
 import random
 from flask import Flask, request
 from flask_cors import CORS
+import json
 app = Flask(__name__)
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
@@ -254,59 +255,92 @@ def plansinglemeal(dishesdb, mealtime = "lunch"):
 #       big deal. 
 #        
 # ---------------------------------------------------------------------------------------------------------------
+    
+def changemeal(diet, planfor, day, mealtime, request_type, change_item, meal_plan):
+    dishesdb = pd.read_excel("Dishes_Database.xlsx", dtype=str).fillna("")
+
+    if diet == "vegetarian":
+        dishesdb.drop(dishesdb[dishesdb['diet'] == "nonvegetarian"].index, inplace = True)
+
+    time_to_meal = {"breakfast":"meal1", "lunch":"meal2", "dinner":"meal3"} # Unnecessary step if instead of mealtime, the meal number (meal1, meal2 etc.) is sent
+    for item_idx, item in enumerate(meal_plan[day][time_to_meal[mealtime]]["items"]): # Find the item that needs to be changed
+        if item["name"] == change_item:
+            break
+
+    if item["type"] == "main dish":
+        if mealtime == "breakfast":
+            legit_mealtimes = ["breakfast", "breakfast or dinner"]
+            if item["sub type"] in ["pongal", "dhida-phalar", "chapathi"]:
+                legit_subtypes =  ["pongal", "dhida-phalar", "chapathi"]
+            else:
+                legit_subtypes =  ["pongal", "dhida-phalar", "chapathi", "Complete meal"]
+        elif mealtime == "dinner":
+            legit_mealtimes = ["dinner", "lunch or dinner", "breakfast or dinner"]
+            if item["sub type"] in ["pongal", "dhida-phalar", "chapathi"]:
+                legit_subtypes = ["pongal", "dhida-phalar", "chapathi"]
+            else:
+                legit_subtypes = ["pongal", "dhida-phalar", "chapathi", "Complete meal"]
+        else: # TODO: We arent considering snacks for now
+            legit_mealtimes = ["lunch", "lunch or dinner"]
+            if item["sub type"] in ["sambar", "omty"]:
+                legit_subtypes =  ["sambar", "omty"]
+            elif item["sub type"] == "pilchar":
+                legit_subtypes =  ["pilchar"]
+            else:
+                legit_subtypes = ["sambar", "omty", "Complete meal"]
+
+    else:
+        if mealtime == "breakfast":
+            legit_mealtimes = ["breakfast", "breakfast or dinner"]
+            if item["sub type"] == "chutney" or "unspecified":
+                legit_subtypes = ["chutney"]
+            elif item["sub type"] == "subzi":
+                legit_subtypes = ["subzi"]
+        elif mealtime == "dinner":
+            legit_mealtimes = ["dinner", "lunch or dinner", "breakfast or dinner"]
+            if item["sub type"] == "chutney" or "unspecified":
+                legit_subtypes = ["chutney"]
+            elif item["sub type"] == "subzi":
+                legit_subtypes = ["subzi"]
+        else:
+            legit_mealtimes = ["lunch", "lunch or dinner"]
+            legit_subtypes = ["ambad", "roast", "Vadai", "poriyal", "kutkiri", "roast", "Vadai"]
+    
+    subdf = dishesdb[(dishesdb["time"].isin(legit_mealtimes)) & (dishesdb["sub type"].isin(legit_subtypes)) &(dishesdb["name"] != item["name"])]
+    try:
+        new_dish_series = subdf.iloc[random.randint(0, subdf.shape[0]-1)]
+    except Exception as err:
+        print("Some exception ", err)
+    new_dish = (new_dish_series.drop(labels=["diet", "time", "only legitimate side dishes", "illegitimate side dishes"])).to_dict()
+    meal_plan[day][time_to_meal[mealtime]]["items"][item_idx] = new_dish
+    
+
+    # If original item was a Complete meal and we selected a omty/sambar/pilchar in its place, then we need to choose a sidedish
+    if item["sub type"] == "Complete meal":
+        if new_dish["sub type"] in ["omty", "sambar", "pilchar", "pongal", "dhida-phalar", "chapathi"]:
+            sidedish = pick_sidedish(maindish=new_dish["name"], dishesdb=dishesdb)
+            meal_plan[day][time_to_meal[mealtime]]["items"].append(sidedish)
+
+    return(meal_plan)
+
+
 @app.route('/api/v1.0')
 # @cross_origin()
 def planmeals_api():
     args = request.args
-    if args.get("request_type") == "change":
-        return changemeal(args.get("change_item"), args.get("meal_plan"))
-    else:
-        return planmeals(args.get("diet"), args.get("planfor"), args.get("mealtime"), args.get("request_type"), args.get("change_item"), args.get("meal_plan"))
-    
-def changemeal(change_item, meal_plan):
-    return(meal_plan)
-#    dishesdb = pd.read_excel("Dishes_Database.xlsx", dtype=str).fillna("")
-#
-#    if diet == "vegetarian":
-#        dishesdb.drop(dishesdb[dishesdb['diet'] == "nonvegetarian"].index, inplace = True)
-#
-#    if item["type"] == "main dish":
-#        if mealtime in ["breakfast", "dinner"]:
-#            if item["sub type"] in ["pongal", "dhida-phalar", "chapathi"]:
-#                legit_subtypes =  ["pongal", "dhida-phalar", "chapathi"]
-#            else:
-#                legit_subtypes =  ["pongal", "dhida-phalar", "chapathi", "Complete meal", "unspecified"]
-#        else: # TODO: We arent considering snacks for now
-#            if item["sub type"] in ["sambar", "omty"]:
-#                legit_subtypes =  ["sambar", "omty"]
-#            elif item["sub type"] == "pilchar":
-#                legit_subtypes =  ["pilchar"]
-#            else:
-#                legit_subtypes = ["sambar", "omty", "Complete meal"]
-#
-#
-#    else: 
-#        if item["sub type"] == "chutney":
-#            legit_subtypes = ["chutney"]
-#        elif item["sub type"] == "subzi":
-#            legit_subtypes = ["subzi"]
-#        else:
-#            legit_subtypes = ["ambad", "roast", "Vadai", "poriyal", "kutkiri", "roast", "Vadai"]
-#    
-#    items = []
-#    subdf = dineshdb[(dineshdb["time"] == mealtime) & (dineshdb["sub type"] in legit_subtypes) &(dineshdb["name"] != item["name"])]
-#    new_dish_series = subdf.iloc[random.randomint(0, subdf.shape[0]-1)]
-#    new_dish = (new_dish_series.drop(labels=["diet", "time", "only legitimate side dishes", "illegitimate side dishes"])).to_dict()
-#    
-#    items.append(new_dish)
-#    if (item["sub type"] == "Complete meal") and (new_dish["type"] in ["omty", "sambar", "pilchar"]):
-#        sidedish = pick_sidedish(item["name"])
-#        items.append(sidedish)
-#
+    return planmeals(args.get("diet"), args.get("planfor"), args.get("mealtime"), args.get("request_type"), args.get("change_item"), args.get("meal_plan"))
 
-def planmeals(diet="vegetarian", planfor="day", mealtime="lunch", request_type="new", change_item=None, meal_plan=None):
-    print("Starting to plan meals")
-    print(diet, planfor, mealtime)
+@app.route('/api/v1.0', methods=['POST'])
+def planmeals_api_json():
+    content_type = request.headers.get('Content-Type')
+    if (content_type == 'application/json'):
+        data = json.loads(request.data)
+        return changemeal(diet=data["diet"], planfor=data["planfor"], day=data["day"],mealtime=data["mealtime"], request_type="change", change_item=data["change_item"], meal_plan=json.loads(data["meal_plan"]))
+    else:
+        return 'Content-Type not supported!'
+
+
+def planmeals(diet="vegetarian", planfor="day", day="day", mealtime="lunch", request_type="new", change_item=None, meal_plan=None):
     dishesdb = pd.read_excel("Dishes_Database.xlsx", dtype=str).fillna("")
 
     if diet == "vegetarian":
@@ -348,7 +382,7 @@ def planmeals(diet="vegetarian", planfor="day", mealtime="lunch", request_type="
     else:   # Assume the plan request is for a week
         # Let us first select breakfast and dinner
         bf_subtypes = ["pongal", "pongal", "pongal", "dhida-phalar", "dhida-phalar", "dhida-phalar", "chapathi",
-                       "chapathi", "Complete meal", "unspecified"]
+                       "chapathi", "Complete meal"]
         dinner_subtypes = ["pongal", "pongal", "dhida-phalar", "dhida-phalar", "dhida-phalar", "chapathi", "chapathi",
                            "Complete meal"]
        
@@ -454,7 +488,10 @@ def planmeals(diet="vegetarian", planfor="day", mealtime="lunch", request_type="
             subdf.reset_index(drop=True, inplace=True) 
             
             maindish_chosen = False
-            rowval = random.randint(0, subdf.shape[0]-1)
+            try:
+                rowval = random.randint(0, subdf.shape[0]-1)
+            except:
+                print("subdf was probably empty because bf_choices is empty")
             tries = 0
             while maindish_chosen == False:
                 maindish = {
@@ -504,7 +541,10 @@ def planmeals(diet="vegetarian", planfor="day", mealtime="lunch", request_type="
             subdf.reset_index(drop=True, inplace=True) 
             
             maindish_chosen = False
-            rowval = random.randint(0, subdf.shape[0]-1)
+            try:
+                rowval = random.randint(0, subdf.shape[0]-1)
+            except:
+                print("subdf was probably empty because dinner_choices is empty")
             tries = 0
             while maindish_chosen == False:
                 maindish = {
@@ -563,7 +603,10 @@ def planmeals(diet="vegetarian", planfor="day", mealtime="lunch", request_type="
             subdf.reset_index(drop=True, inplace=True) 
             
             maindish_chosen = False
-            rowval = random.randint(0, subdf.shape[0]-1)
+            try:
+                rowval = random.randint(0, subdf.shape[0]-1)
+            except:
+                print("subdf was probably empty because lunch_choices is empty")
             tries = 0
             while maindish_chosen == False:
                 maindish = {
@@ -664,7 +707,6 @@ def planmeals(diet="vegetarian", planfor="day", mealtime="lunch", request_type="
                     "day5": days[4],
                     }
 
-    print("Planning done")
     return(mealplan)
 
 

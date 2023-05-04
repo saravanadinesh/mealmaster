@@ -1,4 +1,5 @@
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,10 +16,13 @@
 
 <body class="grey lighten-4">
   <script type="text/javascript">
+    localStorage.setItem("planfor","week")
     $(function () {
       $.get("http://localhost:5000/api/v1.0?diet=vegetarian&planfor=week", function (data, status) {
 
-        var jsonData = JSON.parse(JSON.stringify(data));
+        var requestJson = JSON.stringify(data);
+        var jsonData = JSON.parse(requestJson);
+        var diet = 'vegetarian'
 
         console.log(jsonData);
         for (const byDay in jsonData) {
@@ -39,10 +43,11 @@
             console.log("mealItems");
             console.log(mealItems);
             var mealNames = '';
+            localStorage.setItem("mealJson", requestJson);
             for (let i = 0; i < mealItems.length; i++) {
               if (typeof mealItems[i]["name"] !== 'undefined') {
                 var divHtml =
-                  '<div class="card-panel recipe white row"><div class="recipe-details"><div class="recipe-title">' + mealItems[i]["name"] + '</div></div><div class="recipe-delete"><i class="material-icons" id="refresh" link="http://localhost:5500/api/v1.0?time=meal["time"]" data-id="'+ mealItems[i]["name"] +'">refresh</i></div></div>'
+                  '<div class="card-panel recipe white row"><div class="recipe-details"><div class="recipe-title">' + mealItems[i]["name"] + '</div></div><div class="recipe-delete"><i class="material-icons" id="refresh" data-id="' + mealItems[i]["name"] + '" data-json="' + requestJson + '" data-meal-day="' + byDay + '" data-meal-time="' + meal["time"] + '" data-diet="' + diet + '" data-meal-plan="week">refresh</i></div></div>'
                 $("#recipes").append(divHtml);
               }
 
@@ -89,7 +94,7 @@
   <div class="center">
     <h3>Help me plan for</h3>
     <div id="plan" class="center grey-text text-darken-1">
-      <a class="waves-effect waves-light btn-small gray-txt-btn" id="single">A single meal</a>
+      <a class="waves-effect waves-light btn-small gray-txt-btn" id="meal">A single meal</a>
       <a class="waves-effect waves-light btn-small gray-txt-btn" id="day">A day (3 meals)</a>
       <a class="waves-effect waves-light btn-small" id="week">A week (5 days of food)</a>
     </div>
@@ -100,7 +105,7 @@
   </div>
 
   <div class="center">
-    <a class="btn-large sidenav-trigger" data-target="side-form">
+    <a class="btn-small sidenav-trigger" data-target="side-form">
       Feedback
     </a>
   </div>
