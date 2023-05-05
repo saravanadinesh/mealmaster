@@ -18,44 +18,7 @@
   <script type="text/javascript">
     localStorage.setItem("planfor","week")
     $(function () {
-      $.get("http://localhost:5000/api/v1.0?diet=vegetarian&planfor=week", function (data, status) {
-
-        var requestJson = JSON.stringify(data);
-        var jsonData = JSON.parse(requestJson);
-        var diet = 'vegetarian'
-
-        console.log(jsonData);
-        for (const byDay in jsonData) {
-          console.log("by day");
-          console.log(byDay);
-          console.log(jsonData[byDay]);
-          var day = jsonData[byDay];
-
-          $("#recipes").append('<h2 class="first-letter">' + byDay + '</h2>');
-          for (const x in day) {
-            console.log(day)
-            var meal = day[x];
-            console.log(meal)
-            mealHeader = '<h3 class="first-letter">' + meal["time"] + '</h3>'
-            $("#recipes").append(mealHeader);
-
-            var mealItems = meal["items"];
-            console.log("mealItems");
-            console.log(mealItems);
-            var mealNames = '';
-            localStorage.setItem("mealJson", requestJson);
-            for (let i = 0; i < mealItems.length; i++) {
-              if (typeof mealItems[i]["name"] !== 'undefined') {
-                var divHtml =
-                  '<div class="card-panel recipe white row"><div class="recipe-details"><div class="recipe-title">' + mealItems[i]["name"] + '</div></div><div class="recipe-delete"><i class="material-icons" id="refresh" data-id="' + mealItems[i]["name"] + '" data-json="' + requestJson + '" data-meal-day="' + byDay + '" data-meal-time="' + meal["time"] + '" data-diet="' + diet + '" data-meal-plan="week">refresh</i></div></div>'
-                $("#recipes").append(divHtml);
-              }
-
-            }
-          }
-        }
-      });
-
+      getRecipes('vegetarian','week')
     });
 
   </script>

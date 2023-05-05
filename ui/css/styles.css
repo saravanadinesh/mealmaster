@@ -54,6 +54,7 @@ nav .sidenav-trigger{
 }
 .recipe-title{
   font-weight: bold;
+  font-size: large;
 }
 .recipe-ingredients{
   font-size: 0.8em;
@@ -75,11 +76,11 @@ form .input-field{
   margin-top: 30px;
 }
 
-h2::first-letter {
+h5::first-letter {
   text-transform:capitalize;
 }
 
-h3::first-letter {
+h6::first-letter {
   text-transform:capitalize;
   margin-left: 3%;
 }
@@ -91,4 +92,7 @@ h3::first-letter {
 
 green-txt-btn {
   background-color: #26a69a;
+}
+.cursor-pointer {
+  cursor: pointer;
 }
