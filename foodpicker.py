@@ -328,7 +328,7 @@ def changemeal(diet, planfor, day, mealtime, request_type, change_item, meal_pla
 # @cross_origin()
 def planmeals_api():
     args = request.args
-    return planmeals(args.get("diet"), args.get("planfor"), args.get("mealtime"), args.get("request_type"), args.get("change_item"), args.get("meal_plan"))
+    return planmeals(args.get("diet"), args.get("planfor"), args.get("day"), args.get("mealtime"), args.get("request_type"), args.get("change_item"), args.get("meal_plan"))
 
 @app.route('/api/v1.0', methods=['POST'])
 def planmeals_api_json():

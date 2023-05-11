@@ -41,9 +41,10 @@
 
 <body class="grey lighten-4">
   <script type="text/javascript">
-    localStorage.setItem("planfor","week")
     $(function () {
-      getRecipes('vegetarian','meal')
+      localStorage.setItem('isVeg', 'true');
+      localStorage.setItem("planFor","week")
+      getRecipes('vegetarian','week')
     });
 
   </script>
@@ -67,6 +68,8 @@
   <br>
   <br>
   <div class="btn-group center">
+    <h5>I am a</h5>
+    <br>
     <button class="btn btn-small waves-light waves-effect custom-button custom-radius" id="vegetarian">Vegetarian</button>
     <button class="btn btn-small waves-light waves-effect custom-button" id="nonvegetarian">Non Vegetarian</button>
   </div>
@@ -91,13 +94,15 @@
   <br><br>
 
   <div class="center">
-    <h3>Help me plan for</h3>
+    <h5>Help me plan for</h5>
 
 
     <div class="btn-group">
       <button class="btn btn-small waves-light waves-effect meal-button" id="meal">A single meal</button>
-      <button class="btn btn-small waves-light waves-effect meal-button custom-radius" id="day">A day (3 meals)</button>
-      <button class="btn btn-small waves-light waves-effect meal-button" id="week">A week (5 days of food)</button>
+      <button class="btn btn-small waves-light waves-effect meal-button" id="day">A day (3 meals)</button>
+      <br>
+      <br>
+      <button class="btn btn-small waves-light waves-effect meal-button custom-radius" id="week">A week (5 days of food)</button>
     </div>
 
     <br>
@@ -105,6 +110,7 @@
 
 
     <div class="btn-group hide" id="daymeal">
+      
       <button class="btn btn-small waves-light waves-effect daymeal-button" id="breakfast">Breakfast</button>
       <button class="btn btn-small waves-light waves-effect daymeal-button" id="lunch">Lunch</button>
       <button class="btn btn-small waves-light waves-effect daymeal-button" id="dinner">Dinner</button>
@@ -120,7 +126,7 @@
       Feedback
     </a>
   </div>
-  
+
   <!-- add recipe side nav -->
   <div id="side-form" class="sidenav side-form">
     <form class="add-recipe container section">
