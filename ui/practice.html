@@ -1,0 +1,35 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Theeni Pandaram</title>
+    <!-- materialize icons, css & js -->
+    <link type="text/css" href="css/materialize.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link type="text/css" href="css/styles.css" rel="stylesheet">
+    <script type="text/javascript" src="js/materialize.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.btn').click(function () {
+                $('.btn').removeClass('selected');
+                $('.btn').removeClass('custom-radius');
+                $(this).addClass('selected');
+                $(this).addClass('custom-radius');
+            });
+        });
+
+    </script>
+</head>
+
+<body>
+    <div class="btn-group">
+        <button id="option1" class="btn btn-large waves-light">Option 1</button>
+        <button class="btn btn-large waves-light">Option 2</button>
+        <button class="btn btn-large waves-light">Option 3</button>
+    </div>
+</body>
+
+</html>

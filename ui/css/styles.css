@@ -96,3 +96,21 @@ green-txt-btn {
 .cursor-pointer {
   cursor: pointer;
 }
+
+.custom-color {
+  background-color: #ff00ff; /* set the background color to magenta */
+}
+
+.custom-radius {
+  border-radius: 20pt;
+}
+
+.custom-button {
+  border-color: #ff00ff;
+}
+
+.meal-button {
+}
+
+.daymeal-button {
+}
