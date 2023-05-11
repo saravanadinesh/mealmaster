@@ -1,48 +1,55 @@
-const veg = 'veg'
-const nonveg = 'nonveg'
-const meal = meal
+const veg = 'vegetarian'
+const nonveg = 'nonvegetarian'
+const meal = 'meal'
 const day = 'day'
-const selectedClass = selectedClass;
-const customRadius = customRadius;
+const selectedClass = 'selected';
+const customRadius = 'custom-radius';
 
-const planFor = planFor;
+const planFor = 'planFor';
+const breakfast = 'breakfast';
+const lunch = 'lunch';
+const dinner = 'dinner';  
 $(document).on("click", "button", function () {
   var linkId = $(this).attr('id')
   var buttonClass = $(this).attr('class')
-  if(linkId ==veg) {
-    if(!buttonClass.includes(selectedClass)) {
+  var isVeg = localStorage.getItem('isVeg')
+  if (linkId == veg) {
+    if (!buttonClass.includes(selectedClass)) {
       $(".meal-button").removeClass(customRadius);
       $(".meal-button").removeClass(selectedClass);
       $("#day").addClass(selectedClass);
       $("#day").addClass(customRadius);
       localStorage.setItem(planFor, meal);
-      localStorage.setItem('isVeg','true');
+      localStorage.setItem('isVeg', 'true');
     }
   }
-  if(linkId ==nonveg) {
-    if(buttonClass.includes(selectedClass)) {
+  if (linkId == nonveg) {
+    if (buttonClass.includes(selectedClass)) {
       $(".meal-button").removeClass(customRadius);
       $(".meal-button").removeClass(selectedClass);
       $("#day").addClass(selectedClass);
       $("#day").addClass(customRadius);
       localStorage.setItem(planFor, meal);
-      localStorage.setItem('isVeg','false');
+      localStorage.setItem('isVeg', 'false');
       getRecipes(nonveg, meal)
     }
   }
   if (linkId == meal) {
     localStorage.setItem(planFor, meal);
-    var isVeg = localStorage.getItem('isVeg')
-    if(isVeg === 'true') {
-      getRecipes(veg, meal)
+    $('#daymeal').removeClass('hide')
+    $("#recipes").empty();
+  }
+  if (linkId == breakfast || linkId == lunch || linkId == dinner) {
+    if (isVeg === 'true') {
+      getRecipes(veg, meal, linkId)
     } else {
-      getRecipes(nonveg, meal)
+      getRecipes(nonveg, meal, linkId)
     }
-    
   }
   if (linkId == day) {
     localStorage.setItem(planFor, day);
-    if(isVeg === 'true') {
+    $('#daymeal').addClass('hide')
+    if (isVeg === 'true') {
       getRecipes(veg, day)
     } else {
       getRecipes(nonveg, day)
@@ -50,7 +57,8 @@ $(document).on("click", "button", function () {
   }
   if (linkId == week) {
     localStorage.setItem(planFor, week);
-    if(isVeg === 'true') {
+    $('#daymeal').addClass('hide')
+    if (isVeg === 'true') {
       getRecipes(veg, week)
     } else {
       getRecipes(nonveg, week)
@@ -58,8 +66,8 @@ $(document).on("click", "button", function () {
   }
 });
 
-function getRecipes(diet, planMeal) {
-  $.get("http://localhost:5000/api/v1.0?diet=" + diet + "&planfor=" + planMeal, function (data, status) {
+function getRecipes(diet, planMeal, mealTime) {
+  $.get("http://localhost:5000/api/v1.0?diet=" + diet + "&planfor=" + planMeal + '&mealtime=' + mealTime, function (data, status) {
     populateRecipes(data)
   });
 }
@@ -77,6 +85,7 @@ function loadRecipes(diet, planMeal, mealTime, changeItem, mealPlan) {
     dataType: "json",
     success: function (data, status, xhr) {
       populateRecipes(data)
+
     }
   });
 }
