@@ -72,6 +72,11 @@ $(document).on("click", "button", function () {
       getRecipes(nonveg, week, tmp)
     }
   }
+  if (linkId == 'feedbacksubmit') {
+    console.log("feedback submitted")
+    $('#feedbackmsg').text("Thanks for the feedback!")
+    event.preventDefault();
+  }
 });
 
 function getRecipes(diet, planMeal, mealTime) {
