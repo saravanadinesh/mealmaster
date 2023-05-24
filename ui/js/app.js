@@ -82,7 +82,7 @@ function getRecipes(diet, planMeal, mealTime) {
 
 function loadRecipes(diet, planMeal, mealTime, changeItem, mealPlan) {
   var planfor = localStorage.getItem(planFor)
-  jsonPayload = { 'diet': diet, planFor: planfor, "day": planMeal, "mealtime": mealTime, "change_item": changeItem, "meal_plan": mealPlan }
+  jsonPayload = { 'diet': diet, 'planfor': planfor, "day": planMeal, "mealtime": mealTime, "change_item": changeItem, "meal_plan": mealPlan }
   console.log("Payload to be sent: ")
   console.log(JSON.stringify(jsonPayload))
   $.ajax({
