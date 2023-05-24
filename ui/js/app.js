@@ -75,7 +75,7 @@ $(document).on("click", "button", function () {
 });
 
 function getRecipes(diet, planMeal, mealTime) {
-  $.get("http://localhost:5000/api/v1.0?diet=" + diet + "&planfor=" + planMeal + '&mealtime=' + mealTime, function (data, status) {
+  $.get("http://theenipandaram.life:5000/api/v1.0?diet=" + diet + "&planfor=" + planMeal + '&mealtime=' + mealTime, function (data, status) {
     populateRecipes(data)
   });
 }
@@ -86,7 +86,7 @@ function loadRecipes(diet, planMeal, mealTime, changeItem, mealPlan) {
   console.log("Payload to be sent: ")
   console.log(JSON.stringify(jsonPayload))
   $.ajax({
-    url: "http://localhost:5000/api/v1.0",
+    url: "http://theenipandaram.life:5000/api/v1.0",
     type: "POST",
     data: JSON.stringify(jsonPayload),
     contentType: "application/json",
