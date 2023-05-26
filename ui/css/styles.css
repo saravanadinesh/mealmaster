@@ -118,7 +118,7 @@ green-txt-btn {
 
 .my-button {
   padding: 10px 20px;
-  background-color: #29a99c;
+  background-color: rgb(168, 167, 167);
   color: white;
   border: none;
   cursor: pointer;
@@ -134,7 +134,7 @@ green-txt-btn {
 
 .meal-button {
   padding: 10px 20px;
-  background-color: #29a99c;
+  background-color: rgb(168, 167, 167);
   color: white;
   border: none;
   cursor: pointer;
@@ -147,7 +147,7 @@ green-txt-btn {
 
 .daymeal-button {
   padding: 10px 20px;
-  background-color: #29a99c;
+  background-color: rgb(168, 167, 167);
   color: white;
   border: none;
   cursor: pointer;
