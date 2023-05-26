@@ -11,7 +11,7 @@ const breakfast = 'breakfast';
 const lunch = 'lunch';
 const dinner = 'dinner';
 const singleMT = "singlemealtime";
-const domain = "localhost"
+const domain = "theenipandaram.life"
 
 
 document.addEventListener('DOMContentLoaded', function() {
