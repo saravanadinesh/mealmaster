@@ -9,9 +9,12 @@ import pandas as pd
 import random
 from flask import Flask, request
 from flask_cors import CORS
+from openpyxl import load_workbook, Workbook
 import json
 app = Flask(__name__)
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
+
+feedback_file = 'feedback.xlsx'
 
 def pick_sidedish(maindish, dishesdb):
     maindishdf = dishesdb[(dishesdb["name"] == maindish)] # This should result in a single row dataframe
@@ -323,6 +326,27 @@ def changemeal(diet, planfor, day, mealtime, request_type, change_item, meal_pla
 
     return(meal_plan)
 
+@app.route('/api/v1.0/feedback', methods=['POST'])
+def feedback():
+    name = request.form.get('name')
+    whatsapp_number = request.form.get('whatsappNumber')
+    email = request.form.get('email')
+    feedback = request.form.get('feedback')
+
+    # Load existing workbook
+    try:
+        workbook = load_workbook(feedback_file)
+        sheet = workbook.active
+    except FileNotFoundError:
+        # If the file does not exist, create a new workbook
+        workbook = Workbook()
+        sheet = workbook.active
+        sheet.append(['Name', 'WhatsApp Number', 'Email', 'Feedback'])
+
+    # Append form data to the workbook
+    sheet.append([name, whatsapp_number, email, feedback])
+    workbook.save(feedback_file)
+    return 'Form data submitted successfully!'
 
 @app.route('/api/v1.0')
 # @cross_origin()

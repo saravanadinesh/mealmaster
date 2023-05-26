@@ -11,17 +11,58 @@ const breakfast = 'breakfast';
 const lunch = 'lunch';
 const dinner = 'dinner';
 const singleMT = "singlemealtime";
-$(document).on("click", "button", function () {
+const domain = "localhost"
+
+
+document.addEventListener('DOMContentLoaded', function() {
+  var buttons = document.querySelectorAll('.my-button');
+
+  buttons.forEach(function(button) {
+    button.addEventListener('click', function() {
+      buttons.forEach(function(btn) {
+        btn.classList.remove('selected');
+      });
+      this.classList.add('selected');
+    });
+  });
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+  var mealButtons = document.querySelectorAll('.meal-button');
+  
+  mealButtons.forEach(function(button) {
+    button.addEventListener('click', function() {
+      mealButtons.forEach(function(btn) {
+        btn.classList.remove('selected');
+      });
+      this.classList.add('selected');
+    });
+  });
+});
+
+
+document.addEventListener('DOMContentLoaded', function() {
+  var mealButtons = document.querySelectorAll('.daymeal-button');
+  
+  mealButtons.forEach(function(button) {
+    button.addEventListener('click', function() {
+      mealButtons.forEach(function(btn) {
+        btn.classList.remove('selected');
+      });
+      this.classList.add('selected');
+    });
+  });
+});
+
+
+
+$(document).on("click", "button", function (event) {
   var linkId = $(this).attr('id')
   var buttonClass = $(this).attr('class')
   var isVeg = localStorage.getItem('isVeg')
   if (linkId == veg) {
     if (buttonClass.includes(selectedClass)) {
-      $(".meal-button").removeClass(customRadius);
-      $(".meal-button").removeClass(selectedClass);
       let tmp = localStorage.getItem(planFor)
-      $("#" + tmp).addClass(selectedClass);
-      $("#" + tmp).addClass(customRadius);
       localStorage.setItem('isVeg', 'true');
       let mealtmp = localStorage.getItem(singleMT)
       getRecipes(veg, tmp, mealtmp)
@@ -30,10 +71,6 @@ $(document).on("click", "button", function () {
   if (linkId == nonveg) {
     if (buttonClass.includes(selectedClass)) {
       let tmp = localStorage.getItem(planFor)
-      $(".meal-button").removeClass(customRadius);
-      $(".meal-button").removeClass(selectedClass);
-      $("#" + tmp).addClass(selectedClass);
-      $("#" + tmp).addClass(customRadius);
       localStorage.setItem('isVeg', 'false');
       let mealtmp = localStorage.getItem(singleMT)
       getRecipes(nonveg, tmp, mealtmp)
@@ -74,13 +111,48 @@ $(document).on("click", "button", function () {
   }
   if (linkId == 'feedbacksubmit') {
     console.log("feedback submitted")
-    $('#feedbackmsg').text("Thanks for the feedback!")
+    
     event.preventDefault();
+
+     // Get form input values
+     var name = $('#name').val();
+     var whatsappNumber = $('#Whatsappnumber').val();
+     var email = $('#email').val();
+     var feedback = $('#textarea1').val();
+ 
+     // Perform AJAX request
+     $.ajax({
+       type: 'POST', // or 'GET' depending on your server-side handling
+       url: 'http://' + domain + ':5000/api/v1.0/feedback', // Replace with your server-side script URL
+       data: {
+         name: name,
+         whatsappNumber: whatsappNumber,
+         email: email,
+         feedback: feedback
+       },
+       success: function(response) {
+         // Clear form fields
+         $('#name').val('');
+         $('#Whatsappnumber').val('');
+         $('#email').val('');
+         $('#textarea1').val('');
+ 
+         // Display the response
+         $('#feedbackmsg').text('Thanks for the feedback!'); // Replace with the appropriate element to show the response
+         event.preventDefault();
+ 
+         // You can also do further actions based on the response
+       },
+       error: function(xhr, status, error) {
+         // Handle any errors that occur during the AJAX request
+         console.error(error);
+       }
+     });
   }
 });
 
 function getRecipes(diet, planMeal, mealTime) {
-  $.get("http://theenipandaram.life:5000/api/v1.0?diet=" + diet + "&planfor=" + planMeal + '&mealtime=' + mealTime, function (data, status) {
+  $.get("http://" + domain + ":5000/api/v1.0?diet=" + diet + "&planfor=" + planMeal + '&mealtime=' + mealTime, function (data, status) {
     populateRecipes(data)
   });
 }
@@ -91,7 +163,7 @@ function loadRecipes(diet, planMeal, mealTime, changeItem, mealPlan) {
   console.log("Payload to be sent: ")
   console.log(JSON.stringify(jsonPayload))
   $.ajax({
-    url: "http://theenipandaram.life:5000/api/v1.0",
+    url: "http://" + domain + ":5000/api/v1.0",
     type: "POST",
     data: JSON.stringify(jsonPayload),
     contentType: "application/json",

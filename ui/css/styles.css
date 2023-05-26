@@ -114,3 +114,44 @@ green-txt-btn {
 
 .daymeal-button {
 }
+
+
+.my-button {
+  padding: 10px 20px;
+  background-color: #29a99c;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 20pt;
+}
+
+.my-button.selected {
+  background-color: rgb(1, 85, 85);
+}
+
+
+.meal-button {
+  padding: 10px 20px;
+  background-color: #29a99c;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 20pt;
+}
+
+.meal-button.selected {
+  background-color: rgb(1, 85, 85);
+}
+
+.daymeal-button {
+  padding: 10px 20px;
+  background-color: #29a99c;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 20pt;
+}
+
+.daymeal-button.selected {
+  background-color: rgb(1, 85, 85);
+}

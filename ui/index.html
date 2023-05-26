@@ -13,30 +13,7 @@
   <script type="text/javascript" src="js/materialize.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
   <script type="text/javascript" src="js/app.js"></script>
-  <script type="text/javascript">
-    $(document).ready(function () {
-            $('.meal-button').click(function () {
-                $('.meal-button').removeClass('selected');
-                $('.meal-button').removeClass('custom-radius');
-                $(this).addClass('selected');
-                $(this).addClass('custom-radius');
-            });
 
-            $('.custom-button').click(function () {
-                $('.custom-button').removeClass('selected');
-                $('.custom-button').removeClass('custom-radius');
-                $(this).addClass('selected');
-                $(this).addClass('custom-radius');
-            });
-
-            $('.daymeal-button').click(function () {
-                $('.daymeal-button').removeClass('selected');
-                $('.daymeal-button').removeClass('custom-radius');
-                $(this).addClass('selected');
-                $(this).addClass('custom-radius');
-            });
-        });
-  </script>
 </head> 
 
 <body class="grey lighten-4">
@@ -58,20 +35,11 @@
     </div>
   </nav>
   
-  <div class="btn-group right">
-    For Your Information:
-    <button class="custom-radius">selected</button>
-    <button class="">unselected</button>
-  </div>
-  <br>
-  <br>
-  <br>
-  <br>
   <div class="btn-group center">
     <h5>I am a</h5>
     <br>
-    <button class="btn btn-small waves-light waves-effect custom-button custom-radius" id="vegetarian">Vegetarian</button>
-    <button class="btn btn-small waves-light waves-effect custom-button" id="nonvegetarian">Non Vegetarian</button>
+    <button class="my-button selected" id="vegetarian">Vegetarian</button>
+    <button class="my-button" id="nonvegetarian">Non Vegetarian</button>
   </div>
   <!-- <div class="center grey-text text-darken-1">
     <a class="waves-effect waves-light btn-small">Vegetarian</a>
@@ -98,11 +66,11 @@
 
 
     <div class="btn-group">
-      <button class="btn btn-small waves-light waves-effect meal-button" id="meal">A single meal</button>
-      <button class="btn btn-small waves-light waves-effect meal-button" id="day">A day (3 meals)</button>
+      <button class="meal-button" id="meal">A single meal</button>
+      <button class="meal-button" id="day">A day (3 meals)</button>
       <br>
       <br>
-      <button class="btn btn-small waves-light waves-effect meal-button custom-radius" id="week">A week (5 days of food)</button>
+      <button class="meal-button selected" id="week">A week (5 days of food)</button>
     </div>
 
     <br>
@@ -110,10 +78,9 @@
 
 
     <div class="btn-group hide" id="daymeal">
-      
-      <button class="btn btn-small waves-light waves-effect daymeal-button" id="breakfast">Breakfast</button>
-      <button class="btn btn-small waves-light waves-effect daymeal-button" id="lunch">Lunch</button>
-      <button class="btn btn-small waves-light waves-effect daymeal-button" id="dinner">Dinner</button>
+      <button class="daymeal-button" id="breakfast">Breakfast</button>
+      <button class="daymeal-button" id="lunch">Lunch</button>
+      <button class="daymeal-button" id="dinner">Dinner</button>
     </div>
   </div>
 
@@ -133,8 +100,8 @@
       <h5>Feedback please!</h5>
       <div class="divider"></div>
       <div class="input-field">
-        <input id="title" type="text" class="validate">
-        <label for="title">Name</label>
+        <input id="name" type="text" class="validate">
+        <label for="name">Name</label>
       </div>
       <div class="input-field">
         <input id="Whatsappnumber" type="text" class="validate">
