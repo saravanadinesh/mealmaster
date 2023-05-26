@@ -14,12 +14,12 @@ const singleMT = "singlemealtime";
 const domain = "theenipandaram.life"
 
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   var buttons = document.querySelectorAll('.my-button');
 
-  buttons.forEach(function(button) {
-    button.addEventListener('click', function() {
-      buttons.forEach(function(btn) {
+  buttons.forEach(function (button) {
+    button.addEventListener('click', function () {
+      buttons.forEach(function (btn) {
         btn.classList.remove('selected');
       });
       this.classList.add('selected');
@@ -27,12 +27,12 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   var mealButtons = document.querySelectorAll('.meal-button');
-  
-  mealButtons.forEach(function(button) {
-    button.addEventListener('click', function() {
-      mealButtons.forEach(function(btn) {
+
+  mealButtons.forEach(function (button) {
+    button.addEventListener('click', function () {
+      mealButtons.forEach(function (btn) {
         btn.classList.remove('selected');
       });
       this.classList.add('selected');
@@ -41,12 +41,12 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   var mealButtons = document.querySelectorAll('.daymeal-button');
-  
-  mealButtons.forEach(function(button) {
-    button.addEventListener('click', function() {
-      mealButtons.forEach(function(btn) {
+
+  mealButtons.forEach(function (button) {
+    button.addEventListener('click', function () {
+      mealButtons.forEach(function (btn) {
         btn.classList.remove('selected');
       });
       this.classList.add('selected');
@@ -111,43 +111,64 @@ $(document).on("click", "button", function (event) {
   }
   if (linkId == 'feedbacksubmit') {
     console.log("feedback submitted")
-    
+
     event.preventDefault();
 
-     // Get form input values
-     var name = $('#name').val();
-     var whatsappNumber = $('#Whatsappnumber').val();
-     var email = $('#email').val();
-     var feedback = $('#textarea1').val();
- 
-     // Perform AJAX request
-     $.ajax({
-       type: 'POST', // or 'GET' depending on your server-side handling
-       url: 'http://' + domain + ':5000/api/v1.0/feedback', // Replace with your server-side script URL
-       data: {
-         name: name,
-         whatsappNumber: whatsappNumber,
-         email: email,
-         feedback: feedback
-       },
-       success: function(response) {
-         // Clear form fields
-         $('#name').val('');
-         $('#Whatsappnumber').val('');
-         $('#email').val('');
-         $('#textarea1').val('');
- 
-         // Display the response
-         $('#feedbackmsg').text('Thanks for the feedback!'); // Replace with the appropriate element to show the response
-         event.preventDefault();
- 
-         // You can also do further actions based on the response
-       },
-       error: function(xhr, status, error) {
-         // Handle any errors that occur during the AJAX request
-         console.error(error);
-       }
-     });
+    // Get form input values
+    var name = $('#name').val();
+    var whatsappNumber = $('#Whatsappnumber').val();
+    var email = $('#email').val();
+    var feedback = $('#textarea1').val();
+
+    // Validate email address
+    if (email) {
+      var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        // Display error message or perform appropriate action
+        $('#feedbackmsg').text('Please enter a valid email address.');
+        return; // Stop form submission
+      }
+    }
+
+    if (whatsappNumber) {
+      // Validate phone number (assuming 10-digit numeric format)
+      var phoneNumberRegex = /^\d{10}$/;
+      if (!phoneNumberRegex.test(whatsappNumber)) {
+        // Display error message or perform appropriate action
+        $('#feedbackmsg').text('Please enter a valid 10-digit phone number.');
+        return; // Stop form submission
+      }
+    }
+
+
+    // Perform AJAX request
+    $.ajax({
+      type: 'POST', // or 'GET' depending on your server-side handling
+      url: 'http://' + domain + ':5000/api/v1.0/feedback', // Replace with your server-side script URL
+      data: {
+        name: name,
+        whatsappNumber: whatsappNumber,
+        email: email,
+        feedback: feedback
+      },
+      success: function (response) {
+        // Clear form fields
+        $('#name').val('');
+        $('#Whatsappnumber').val('');
+        $('#email').val('');
+        $('#textarea1').val('');
+
+        // Display the response
+        $('#feedbackmsg').text('Thanks for the feedback!'); // Replace with the appropriate element to show the response
+        event.preventDefault();
+
+        // You can also do further actions based on the response
+      },
+      error: function (xhr, status, error) {
+        // Handle any errors that occur during the AJAX request
+        console.error(error);
+      }
+    });
   }
 });
 
