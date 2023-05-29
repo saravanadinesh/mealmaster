@@ -2,3 +2,7 @@ flask
 flask_cors
 pandas
 openpyxl
+uuid
+pymongo
+flask_session
+redis

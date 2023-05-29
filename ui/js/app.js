@@ -11,7 +11,7 @@ const breakfast = 'breakfast';
 const lunch = 'lunch';
 const dinner = 'dinner';
 const singleMT = "singlemealtime";
-const domain = "theenipandaram.life"
+const domain = "localhost"
 
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -140,11 +140,14 @@ $(document).on("click", "button", function (event) {
       }
     }
 
-
+    var sessionID = $.cookie('session_id');
     // Perform AJAX request
     $.ajax({
       type: 'POST', // or 'GET' depending on your server-side handling
       url: 'http://' + domain + ':5000/api/v1.0/feedback', // Replace with your server-side script URL
+      headers: {
+        'X-Session-ID': sessionID
+      },
       data: {
         name: name,
         whatsappNumber: whatsappNumber,
@@ -173,8 +176,39 @@ $(document).on("click", "button", function (event) {
 });
 
 function getRecipes(diet, planMeal, mealTime) {
-  $.get("http://" + domain + ":5000/api/v1.0?diet=" + diet + "&planfor=" + planMeal + '&mealtime=' + mealTime, function (data, status) {
-    populateRecipes(data)
+  var session_id = $.cookie('session_id');
+  $.get({
+    url: "http://" + domain + ":5000/api/v1.0?diet=" + diet + "&planfor=" + planMeal + '&mealtime=' + mealTime,
+    beforeSend: function (xhr) {
+      var sessionID = session_id;
+      xhr.setRequestHeader('X-Session-ID', sessionID);
+    },
+    success: function (data, status, jqXHR) {
+      // Get all response headers as a string
+      var headersString = jqXHR.getAllResponseHeaders();
+
+      // Split the headers into individual lines
+      var headersArray = headersString.trim().split(/[\r\n]+/);
+
+      
+      for (var i = 0; i < headersArray.length; i++) {
+        var headerLine = headersArray[i];
+
+        // Check if the line starts with "Set-Cookie:"
+        if (/^Set-Cookie:/i.test(headerLine)) {
+          var separatorIndex = headerLine.indexOf(':');
+          var headerKey = headerLine.substr(0, separatorIndex).trim();
+          var headerValue = headerLine.substr(separatorIndex + 1).trim();
+    
+          $.cookie(headerKey, headerValue, {
+            expires: new Date('Tue, 30 May 2023 16:41:55 GMT'),
+            path: '/'
+          });
+        }
+      }
+      
+      populateRecipes(data)
+    }
   });
 }
 
@@ -183,13 +217,39 @@ function loadRecipes(diet, planMeal, mealTime, changeItem, mealPlan) {
   jsonPayload = { 'diet': diet, 'planfor': planfor, "day": planMeal, "mealtime": mealTime, "change_item": changeItem, "meal_plan": mealPlan }
   console.log("Payload to be sent: ")
   console.log(JSON.stringify(jsonPayload))
+  var sessionID = $.cookie('session_id');
   $.ajax({
     url: "http://" + domain + ":5000/api/v1.0",
     type: "POST",
     data: JSON.stringify(jsonPayload),
     contentType: "application/json",
     dataType: "json",
-    success: function (data, status, xhr) {
+    headers: {
+      'X-Session-ID': sessionID
+    },
+    success: function (data, status, jqXHR) {
+      // Get all response headers as a string
+      var headersString = jqXHR.getAllResponseHeaders();
+
+      // Split the headers into individual lines
+      var headersArray = headersString.trim().split(/[\r\n]+/);
+
+      
+      for (var i = 0; i < headersArray.length; i++) {
+        var headerLine = headersArray[i];
+
+        // Check if the line starts with "Set-Cookie:"
+        if (/^Set-Cookie:/i.test(headerLine)) {
+          var separatorIndex = headerLine.indexOf(':');
+          var headerKey = headerLine.substr(0, separatorIndex).trim();
+          var headerValue = headerLine.substr(separatorIndex + 1).trim();
+    
+          $.cookie(headerKey, headerValue, {
+            expires: new Date('Tue, 30 May 2023 16:41:55 GMT'),
+            path: '/'
+          });
+        }
+      }
       populateRecipes(data)
 
     }

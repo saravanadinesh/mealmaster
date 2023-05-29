@@ -7,14 +7,159 @@
 
 import pandas as pd
 import random
-from flask import Flask, request
+from flask import Flask, request, session
 from flask_cors import CORS
 from openpyxl import load_workbook, Workbook
 import json
+from pymongo import MongoClient
+from datetime import datetime
+from flask_session import Session
+from redis import Redis
+import uuid
+from datetime import timedelta
+
 app = Flask(__name__)
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 feedback_file = 'feedback.xlsx'
+
+app.secret_key = 'Xc8zdoe1DWNi3pRLK66DQ7Pz6HRL2Xu3lGpTPco1NyY'
+app.config['SESSION_TYPE'] = 'redis'
+app.config['SESSION_REDIS'] = Redis(host='localhost', port=6379)
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=1)
+app.config['SESSION_COOKIE_HTTPONLY'] = False
+Session(app)
+
+
+@app.before_request
+def count_unique_visitors():
+    session.permanent = True
+    session.modified = True
+    if 'session_id' in request.cookies:
+        session['session_id'] = request.cookies.get('session_id')
+    if 'session_id' not in session:
+        session_id = str(uuid.uuid4())
+        session['session_id'] = session_id
+
+        client = MongoClient('mongodb://localhost:27017')
+
+        try:
+            database = client['theenipandaram']
+            collection = database['usercount']
+            # Get the current date and time
+            current_date = datetime.now()
+
+            # Convert date to string using strftime
+            date_string = current_date.strftime('%Y-%m-%d')
+            count = collection.count_documents({})
+            if count == 0:
+                document = {
+                    'date': date_string,  # Date in string format
+                    'count': 1
+                }
+
+                result = collection.insert_one(document)
+                datemin_string = current_date.strftime('%Y-%m-%d %H:%M')
+                document2 = {
+                    'date': datemin_string,
+                    'count': 1
+                    
+                }
+                result = collection.insert_one(document2)
+            else:
+                # Update query to increment the count field for a single document
+                filter_query = {
+                    'date': date_string
+                }
+
+                update_query = {
+                    '$inc': {
+                        'count': 1
+                    }
+                }
+
+                result = collection.update_one(filter_query, update_query)
+                if result.modified_count==0:
+                    document = {
+                        'date': date_string,  # Date in string format
+                        'count': 1
+                    }
+
+                    result = collection.insert_one(document)
+                    datemin_string = current_date.strftime('%Y-%m-%d %H:%M')
+                    document2 = {
+                        'date': datemin_string,
+                        'count': 1
+                        
+                    }
+                    result = collection.insert_one(document2)
+                else:
+                    datemin_string = current_date.strftime('%Y-%m-%d %H:%M')
+                    filter_query2 = {
+                        'date': datemin_string
+                    }
+
+                    update_query2 = {
+                        '$inc': {
+                            'count': 1
+                        }
+                    }
+                    result = collection.update_one(filter_query2, update_query2)
+        finally:
+            client.close()
+
+# Set the session ID cookie after each request
+@app.after_request
+def set_session_id_cookie(response):
+    if 'session_id' in session and 'session_id' not in request.cookies:
+        response.set_cookie('session_id', session['session_id'], max_age=86400, httponly=False)  # Set cookie validity to one day (86400 seconds)
+    return response
+
+#     # Retrieve the custom session identifier from the cookie
+@app.before_request
+def retrieve_session_id():
+    if 'session_id' in request.cookies:
+        session['session_id'] = request.cookies.get('session_id')
+
+def insert_update_user_count():
+    # Replace with your MongoDB connection string
+    client = MongoClient('mongodb://localhost:27017')
+
+    try:
+        database = client['theenipandaram']
+        collection = database['usercount']
+        # Get the current date and time
+        current_date = datetime.now()
+
+        # Convert date to string using strftime
+        date_string = current_date.strftime('%Y-%m-%d')
+        count = collection.count_documents({})
+        if count == 0:
+
+            document = {
+                'date': date_string,  # Date in string format
+                'count': 1
+            }
+
+            result = collection.insert_one(document)
+            print('Document inserted with ID:', result.inserted_id)
+        else:
+            # Update query to increment the count field for a single document
+            filter_query = {
+                'date': date_string
+            }
+
+            update_query = {
+                '$inc': {
+                    'count': 1
+                }
+            }
+
+            result = collection.update_one(filter_query, update_query)
+
+    finally:
+        client.close()
+
 
 def pick_sidedish(maindish, dishesdb):
     maindishdf = dishesdb[(dishesdb["name"] == maindish)] # This should result in a single row dataframe
